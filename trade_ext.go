@@ -111,6 +111,16 @@ func (t *TradeExt) ReqQryClassifiedInstrument() int {
 		ClassType:   THOST_FTDC_INS_ALL}, t.getReqID())
 }
 
+// ReqQryClassifiedInstrument 查可交易合约
+//
+//	@receiver t TradeExt
+//	@return int 0:正常;<0流控
+func (t *TradeExt) ReqQryClassifiedInstrumentByType(classType TThostFtdcClassTypeType) int {
+	return t.Trade.ReqQryClassifiedInstrument(&CThostFtdcQryClassifiedInstrumentField{
+		TradingType: THOST_FTDC_TD_TRADE,
+		ClassType:   classType}, t.getReqID())
+}
+
 // ReqQryOrder 查委托
 //
 //	@receiver t TradeExt
@@ -366,10 +376,20 @@ func (t *TradeExt) ReqQryDepthMarketData(exchange, instrument string) int {
 	return t.Trade.ReqQryDepthMarketData(&f, t.getReqID())
 }
 
+// ReqQryInstrumentCommissionRate 查费率
 func (t *TradeExt) ReqQryInstrumentCommissionRate(InstrumentID TThostFtdcInstrumentIDType) int {
 	f := CThostFtdcQryInstrumentCommissionRateField{}
 	copy(f.BrokerID[:], []byte(t.Broker))
 	copy(f.InvestorID[:], []byte(t.UserID))
 	f.InstrumentID = InstrumentID
 	return t.Trade.ReqQryInstrumentCommissionRate(&f, t.getReqID())
+}
+
+// ReqQryInstrumentMarginRate 查保证金
+func (t *TradeExt) ReqQryInstrumentMarginRate(InstrumentID TThostFtdcInstrumentIDType) int {
+	f := CThostFtdcQryInstrumentMarginRateField{}
+	copy(f.BrokerID[:], []byte(t.Broker))
+	copy(f.InvestorID[:], []byte(t.UserID))
+	f.InstrumentID = InstrumentID
+	return t.Trade.ReqQryInstrumentMarginRate(&f, t.getReqID())
 }
