@@ -365,3 +365,11 @@ func (t *TradeExt) ReqQryDepthMarketData(exchange, instrument string) int {
 	copy(f.InstrumentID[:], instrument)
 	return t.Trade.ReqQryDepthMarketData(&f, t.getReqID())
 }
+
+func (t *TradeExt) ReqQryInstrumentCommissionRate(InstrumentID TThostFtdcInstrumentIDType) int {
+	f := CThostFtdcQryInstrumentCommissionRateField{}
+	copy(f.BrokerID[:], []byte(t.Broker))
+	copy(f.InvestorID[:], []byte(t.UserID))
+	f.InstrumentID = InstrumentID
+	return t.Trade.ReqQryInstrumentCommissionRate(&f, t.getReqID())
+}
