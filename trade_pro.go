@@ -307,8 +307,8 @@ func (trd *TradePro) Start(cfg LoginConfig) (loginInfo CThostFtdcRspUserLoginFie
 	go func() {
 		time.Sleep(200 * time.Millisecond)
 		trd.TradeExt.RegisterFront(cfg.Front)
-		trd.TradeExt.SubscribePrivateTopic(THOST_TERT_QUICK)
-		trd.TradeExt.SubscribePublicTopic(THOST_TERT_RESTART)
+		// trd.TradeExt.SubscribePrivateTopic(THOST_TERT_QUICK)
+		// trd.TradeExt.SubscribePublicTopic(THOST_TERT_RESTART)
 		trd.TradeExt.Init()
 	}()
 
@@ -332,32 +332,37 @@ func (trd *TradePro) Start(cfg LoginConfig) (loginInfo CThostFtdcRspUserLoginFie
 			case onRspAuthenticate:
 				trd.TradeExt.ReqUserLogin(cfg.Password) // 登录
 			case onRspUserLogin:
-				trd.TradeExt.ReqQryInvestor() // 查用户
-			case onRspQryInvestor:
-				// 交易员登录: 跳过查询过程
-				if _, exists := trd.Investors[trd.UserID]; !exists {
-					time.Sleep(time.Millisecond * 1100)
-					trd.TradeExt.ReqQryAccountregister() // 查银期签约
-				} else {
-					trd.TradeExt.ReqSettlementInfoConfirm() // 确认结算
-				}
-			case onRspSettlementInfoConfirm:
-				time.Sleep(time.Millisecond * 1100)
+				// trd.TradeExt.ReqQryInvestor() // 查用户
 				trd.TradeExt.ReqQryClassifiedInstrument() // 查合约
+			// case onRspQryInvestor:
+			// 	// 交易员登录: 跳过查询过程
+			// 	if _, exists := trd.Investors[trd.UserID]; !exists {
+			// 		time.Sleep(time.Millisecond * 1100)
+			// 		trd.TradeExt.ReqQryAccountregister() // 查银期签约
+			// 	} else {
+			// 		trd.TradeExt.ReqSettlementInfoConfirm() // 确认结算
+			// 	}
+			// case onRspSettlementInfoConfirm:
+			// 	time.Sleep(time.Millisecond * 1100)
+			// 	trd.TradeExt.ReqQryClassifiedInstrument() // 查合约
 			case onRspQryClassifiedInstrument:
-				time.Sleep(time.Millisecond * 1100)
-				trd.TradeExt.ReqQryOrder() // 查委托
-			case onRspQryOrder:
-				time.Sleep(time.Millisecond * 1100)
-				trd.TradeExt.ReqQryTrade() // 查成交
-			case onRspQryTrade:
-				time.Sleep(time.Millisecond * 1100)
-				trd.TradeExt.ReqQryAccountregister() // 查银期签约
-			case onRspQryAccountregister:
 				fmt.Println("登录过程完成")
 				bs, _ := simplifiedchinese.GB18030.NewEncoder().Bytes([]byte("正确"))
 				copy(rsp.ErrorMsg[:], bs)
 				return
+
+				// trd.TradeExt.ReqQryOrder() // 查委托
+			// case onRspQryOrder:
+			// 	time.Sleep(time.Millisecond * 1100)
+			// 	trd.TradeExt.ReqQryTrade() // 查成交
+			// case onRspQryTrade:
+			// 	time.Sleep(time.Millisecond * 1100)
+			// 	trd.TradeExt.ReqQryAccountregister() // 查银期签约
+			// case onRspQryAccountregister:
+			// 	fmt.Println("登录过程完成")
+			// 	bs, _ := simplifiedchinese.GB18030.NewEncoder().Bytes([]byte("正确"))
+			// 	copy(rsp.ErrorMsg[:], bs)
+			// 	return
 			default:
 				fmt.Println("未处理标识:", cb)
 			}
