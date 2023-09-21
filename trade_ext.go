@@ -388,6 +388,7 @@ func (t *TradeExt) ReqQryInstrumentCommissionRate(InstrumentID TThostFtdcInstrum
 // ReqQryInstrumentMarginRate 查保证金
 func (t *TradeExt) ReqQryInstrumentMarginRate(InstrumentID TThostFtdcInstrumentIDType) int {
 	f := CThostFtdcQryInstrumentMarginRateField{}
+	f.HedgeFlag = THOST_FTDC_HF_Speculation
 	copy(f.BrokerID[:], []byte(t.Broker))
 	copy(f.InvestorID[:], []byte(t.UserID))
 	f.InstrumentID = InstrumentID
